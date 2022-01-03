@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Flow</title>
+</head>
+<body>
+<h2>파일 확장자 차단</h2>
+<div>
+    <form id="frm" name="frm" method="post" action="/file" enctype="multipart/form-data">
+        <input type="file" id="files" name="files" multiple="multiple">
+        <input type="submit" id="submit" value="저장" class="btn">
+    </form>
+</div>
+<br>
+
+
+<span>고정 확장자</span>
+<span th:each="fixed : ${FixedExList}">
+        <input th:text="${fixed.getName()}+ '  '" th:type="checkbox" type="submit" th:checked="${fixed.getCheck()}" th:attr="onclick=|up('${fixed.getName()}')|">
+</span>
+
+
+<div>
+
+    <div>
+        <span>커스텀 확장자
+            <form style="display: inline" action="/extends" method="post">
+                <input name="name" type="text" placeholder="확장자 입력">
+                <input type="submit" value="+추가">
+            </form>
+        </span>
+    </div>
+    <div  style="border: 2px solid black; width: 300px; height: 400px;" >
+        <table>
+            <tr>
+                <div th:text="${ExList.size()}+ '/200' "></div>
+            </tr>
+            <tr th:each="ex:${ExList}">
+                <div style="display: inline; border: 1px solid black" >
+                    <span th:text=" ${ex.getName()}"></span>
+                    <form style="display: inline;" action="/extends/delete" method="get">
+                        <input style=" width:18px; height: 18px;" type="submit" value="X">
+                        <input style=" width:18px; height: 18px;" type="hidden" name="name" th:value="${ex.getName()}">
+                    </form>
+                </div>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    function up(fix) {
+        $.ajax({
+            url: "https://localhost:8080/fixedextends/update",
+            type: "GET",
+            data:fix,
+            success: function (result) {
+                if (result) {
+                } else {
+                    alert("불러오기 실패");
+                }
+            }
+        });
+    }
+
+</script>
+</html>
